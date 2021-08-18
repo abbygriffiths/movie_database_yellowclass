@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:movie_db/models/movie.dart' show Movie;
 
 class AddMoviePage extends StatefulWidget {
+  const AddMoviePage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _AddMoviePageState();
 }
