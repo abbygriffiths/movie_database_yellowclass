@@ -24,3 +24,7 @@ Uses Hive as the database to store the information.
 2. Create a `secrets.json` file in the root of the project directory
 3. Inside `secrets.json` add a key `"OMDB_API_ENDPOINT"`
 4. Copy and paste the OMDB URL you receive on your email as the value for the above key.
+
+#### Attributions
+This app uses illustrations from various sources with permission to use said illustrations with proper attribution.
+<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

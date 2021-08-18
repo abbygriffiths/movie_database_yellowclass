@@ -64,6 +64,9 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
+    - images/movie_poster_not_found.jpg
+    - images/no_internet_or_error.jpg
+    - images/no_internet_or_error.png
     - secrets.json
 
   # An image asset can refer to one or more resolution-specific "variants", see

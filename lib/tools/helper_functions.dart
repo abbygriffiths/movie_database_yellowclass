@@ -27,9 +27,41 @@ List<Movie> parseMoviesFromSearch(String responseBody) {
   return parsed.map<Movie>((json) => Movie.fromJson(json)).toList();
 }
 
-Future<List<Movie>> fetchMoviesFromSearch(http.Client client) async {
+// HACK: returns a List because fetchMovies needs a list
+List<Movie> parseMovieFromTitle(String responseBody) {
+  return [Movie.fromJson(jsonDecode(responseBody))];
+}
+
+Future<List<Movie>> fetchMovies(http.Client client, String searchStringOrTitle,
+    {bool isSearch = false}) async {
   String apiUrl = await getApiUrl();
-  final searchQuery = tokenizeString('Interstellar');
+  final searchQuery = tokenizeString(searchStringOrTitle);
+
+  String queryParam = '&t';
+  if (isSearch) {
+    queryParam = '&s';
+  }
+
+  final response =
+      await client.get(Uri.parse(apiUrl + '$queryParam=$searchQuery'));
+
+  if (isSearch) {
+    return compute(parseMoviesFromSearch, response.body);
+  } else {
+    return compute(parseMovieFromTitle, response.body);
+  }
+}
+
+Future<Movie> fetchMovieFromTitle(http.Client client, String title) async {
+  final List<Movie> movies = await fetchMovies(client, title);
+  return movies[0];
+}
+
+Future<List<Movie>> fetchMoviesFromSearch(
+    http.Client client, String searchString) async {
+  return await fetchMovies(client, searchString, isSearch: true);
+  /*String apiUrl = await getApiUrl();
+  final searchQuery = tokenizeString(searchString);
   final response = await client.get(Uri.parse(apiUrl + '&s=$searchQuery'));
-  return compute(parseMoviesFromSearch, response.body);
+  return compute(parseMoviesFromSearch, response.body);*/
 }
