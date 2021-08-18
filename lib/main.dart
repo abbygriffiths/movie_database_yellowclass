@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/home.dart';
+import 'screens/list_movies.dart';
 
 void main() {
   runApp(const MovieDatabaseApp());
@@ -15,7 +15,7 @@ class MovieDatabaseApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MoviesPage(
+      home: const ListMoviesPage(
         title: 'Movies Database',
       ),
     );
