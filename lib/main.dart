@@ -15,7 +15,9 @@ class MovieDatabaseApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const MoviesPage(
+        title: 'Movies Database',
+      ),
     );
   }
 }
