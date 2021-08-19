@@ -7,10 +7,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:movie_db/models/boxes.dart';
 import 'package:movie_db/models/movie_model.dart';
+import 'package:movie_db/provider/google_sign_in.dart';
 import 'package:movie_db/screens/show_movie_details_page.dart';
 import 'package:movie_db/tools/movie_database_functions.dart'
     as movie_db_functions;
+import 'package:movie_db/widgets/logged_in_widget.dart';
 import 'package:movie_db/widgets/movie_dialog.dart';
+import 'package:provider/provider.dart';
 
 class MoviesPage extends StatefulWidget {
   const MoviesPage({Key? key}) : super(key: key);
@@ -24,7 +27,17 @@ class _MoviesPageState extends State<MoviesPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('Movies Database'),
-          centerTitle: true,
+          actions: [
+            TextButton.icon(
+                icon: const Icon(Icons.logout, color: Colors.black),
+                onPressed: () {
+                  final provider =
+                      Provider.of<GoogleSignInProvider>(context, listen: false);
+                  provider.logout();
+                },
+                label:
+                    const Text('Logout', style: TextStyle(color: Colors.black)))
+          ],
         ),
         body: ValueListenableBuilder<Box<Movie>>(
           valueListenable: Boxes.getMovies().listenable(),
@@ -44,15 +57,20 @@ class _MoviesPageState extends State<MoviesPage> {
 
   Widget buildContent(List<Movie> movies) {
     if (movies.isEmpty) {
-      return const Center(
-        child: Text(
-          'No movies added yet',
-          style: TextStyle(fontSize: 24),
-        ),
+      return Column(
+        children: const [
+          LoggedInWidget(),
+          SizedBox(height: 16),
+          Text(
+            'No movies added yet',
+            style: TextStyle(fontSize: 24),
+          ),
+        ],
       );
     } else {
       return Column(
         children: [
+          const LoggedInWidget(),
           const SizedBox(height: 24),
           Expanded(
             child: ListView.builder(
