@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:movie_db/models/boxes.dart';
 import 'package:movie_db/models/movie_model.dart';
-import 'package:movie_db/screens/show_movie_details.dart';
+import 'package:movie_db/screens/show_movie_details_page.dart';
 import 'package:movie_db/tools/helper_functions.dart';
 import 'package:movie_db/widgets/movie_dialog.dart';
 
