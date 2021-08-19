@@ -4,12 +4,12 @@ import 'package:flutter/painting.dart';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:movie_db/models/boxes.dart';
 import 'package:movie_db/models/movie_model.dart';
 import 'package:movie_db/screens/show_movie_details_page.dart';
-import 'package:movie_db/tools/helper_functions.dart';
+import 'package:movie_db/tools/movie_database_functions.dart'
+    as movie_db_functions;
 import 'package:movie_db/widgets/movie_dialog.dart';
 
 class MoviesPage extends StatefulWidget {
@@ -29,15 +29,16 @@ class _MoviesPageState extends State<MoviesPage> {
         body: ValueListenableBuilder<Box<Movie>>(
           valueListenable: Boxes.getMovies().listenable(),
           builder: (context, box, _) {
-            final transactions = box.values.toList().cast<Movie>();
-            return buildContent(transactions);
+            final movies = box.values.toList().cast<Movie>();
+            return buildContent(movies);
           },
         ),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () => showDialog(
               context: context,
-              builder: (context) => MovieDialog(onClickedSubmit: addMovie)),
+              builder: (context) => const MovieDialog(
+                  onClickedSubmit: movie_db_functions.addMovie)),
         ),
       );
 
@@ -92,11 +93,6 @@ class _MoviesPageState extends State<MoviesPage> {
         children: [
           buildButtons(context, movie),
         ],
-        onExpansionChanged: (expanded) => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ShowMovieDetailsPage(movie: movie),
-          ),
-        ),
       ),
     );
   }
@@ -107,10 +103,22 @@ class _MoviesPageState extends State<MoviesPage> {
             child: TextButton.icon(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
+                  builder: (context) => ShowMovieDetailsPage(movie: movie),
+                ),
+              ),
+              icon: const Icon(Icons.more_vert),
+              label: const Text('Details'),
+            ),
+          ),
+          Expanded(
+            child: TextButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
                   builder: (context) => MovieDialog(
                     movie: movie,
                     onClickedSubmit: (title, director, imdbId) =>
-                        editMovie(movie, title, director, imdbId),
+                        movie_db_functions.editMovie(
+                            movie, title, director, imdbId),
                   ),
                 ),
               ),
@@ -122,28 +130,9 @@ class _MoviesPageState extends State<MoviesPage> {
             child: TextButton.icon(
               icon: const Icon(Icons.delete),
               label: const Text('Delete'),
-              onPressed: () => deleteMovie(movie),
+              onPressed: () => movie_db_functions.deleteMovie(movie),
             ),
           ),
         ],
       );
-
-  Future addMovie(String title, String director, String imdbId) async {
-    final box = Boxes.getMovies();
-    final movie = await fetchMovieFromTitle(http.Client(), title);
-    box.add(movie);
-  }
-
-  void editMovie(
-      Movie movie, String newTitle, String newDirector, String newImdbId) {
-    movie.title = newTitle;
-    movie.director = newDirector;
-    movie.imdbId = newImdbId;
-
-    movie.save();
-  }
-
-  void deleteMovie(Movie movie) {
-    movie.delete();
-  }
 }

@@ -1,7 +1,5 @@
 import 'package:hive/hive.dart';
 
-import 'package:movie_db/models/movie_search_result.dart';
-
 part 'movie_model.g.dart';
 
 @HiveType(typeId: 0)
@@ -34,14 +32,6 @@ class Movie extends HiveObject {
       movie.director = json['Director'];
     }
     return movie;
-  }
-
-  factory Movie.fromSearchResult(MovieSearchResult result) {
-    return Movie(
-      title: result.title,
-      posterUrl: result.posterUrl,
-      imdbId: result.imdbId,
-    );
   }
 
   @override
