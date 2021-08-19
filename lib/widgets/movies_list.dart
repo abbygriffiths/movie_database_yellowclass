@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:movie_db/models/movie.dart' show Movie;
+import 'package:movie_db/models/movie_model.dart' show Movie;
+import 'package:movie_db/screens/show_movie_details.dart';
 
 class MoviesList extends StatelessWidget {
   const MoviesList({Key? key, required this.movies}) : super(key: key);
@@ -21,6 +22,14 @@ class MoviesList extends StatelessWidget {
                 return Image.asset('images/movie_poster_not_found.jpg');
               },
             ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ShowMovieDetailsPage(movie: movies[index]),
+                  ));
+            },
           ),
         );
       },

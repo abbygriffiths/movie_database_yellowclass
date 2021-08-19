@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:http/http.dart' as http;
-import 'package:movie_db/models/movie.dart' show Movie;
+import 'package:movie_db/models/movie_model.dart' show Movie;
 
 String tokenizeString(String param) {
   return param.split(' ').join('+');
@@ -33,19 +33,14 @@ List<Movie> parseMovieFromTitle(String responseBody) {
 }
 
 Future<List<Movie>> fetchMovies(http.Client client, String searchStringOrTitle,
-    {bool isSearch = false}) async {
+    {String queryParam = '&t'}) async {
   String apiUrl = await getApiUrl();
   final searchQuery = tokenizeString(searchStringOrTitle);
-
-  String queryParam = '&t';
-  if (isSearch) {
-    queryParam = '&s';
-  }
 
   final response =
       await client.get(Uri.parse(apiUrl + '$queryParam=$searchQuery'));
 
-  if (isSearch) {
+  if (queryParam == '&s') {
     return compute(parseMoviesFromSearch, response.body);
   } else {
     return compute(parseMovieFromTitle, response.body);
@@ -57,11 +52,13 @@ Future<Movie> fetchMovieFromTitle(http.Client client, String title) async {
   return movies[0];
 }
 
+Future<Movie> fetchMovieFromImdbId(http.Client client, String imdbId) async {
+  final List<Movie> movies =
+      await fetchMovies(client, imdbId, queryParam: '&i');
+  return movies[0];
+}
+
 Future<List<Movie>> fetchMoviesFromSearch(
     http.Client client, String searchString) async {
-  return await fetchMovies(client, searchString, isSearch: true);
-  /*String apiUrl = await getApiUrl();
-  final searchQuery = tokenizeString(searchString);
-  final response = await client.get(Uri.parse(apiUrl + '&s=$searchQuery'));
-  return compute(parseMoviesFromSearch, response.body);*/
+  return await fetchMovies(client, searchString, queryParam: '&s');
 }
